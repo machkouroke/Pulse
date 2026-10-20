@@ -16,7 +16,14 @@
 namespace pulse {
 namespace {
 
-constexpr wchar_t kSessionName[] = L"PulseHealthNet";
+// Overridable so another process (PulseMCP) does not stop PulseService's
+// session: StartSessionLocked() stops any session with this name first.
+#ifndef PULSE_ETW_SESSION_NAME
+#define PULSE_ETW_SESSION_NAME PulseHealthNet
+#endif
+#define PULSE_WIDEN2(x) L## #x
+#define PULSE_WIDEN(x) PULSE_WIDEN2(x)
+constexpr wchar_t kSessionName[] = PULSE_WIDEN(PULSE_ETW_SESSION_NAME);
 constexpr size_t kMaxPacketBytes = 64ull * 1024ull * 1024ull;
 
 // Microsoft-Windows-Kernel-Network
